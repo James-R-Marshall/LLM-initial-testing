@@ -31,6 +31,7 @@ BASE_PACKAGES = [
         "datasets",
         "tqdm",
         "huggingface-hub",
+        "unsloth",
 ]
 
 # Optional packages that often are used (bitsandbytes requires CUDA)
