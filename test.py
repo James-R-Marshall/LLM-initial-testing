@@ -53,7 +53,7 @@ def main():
 
     # Attempt direct load
     try:
-        tokenizer, model = load_model_candidate(model_path, device, dtype)
+        tokenizer, model = load_model_candidate(model_path, device, dtype, device_map="auto")
     except Exception:
         # If direct load failed, try to treat path as LoRA adapters
         if args.base:
