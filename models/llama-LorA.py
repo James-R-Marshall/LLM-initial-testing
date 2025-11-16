@@ -11,7 +11,7 @@ dtype = None
 
 # Load 4bit quantized Llama 3.1 8B model
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "unsloth/llama-3.1-8b-bnb-4bit",
+    model_name = "unsloth/tinyllama-chat-bnb-4bit",
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = True,
