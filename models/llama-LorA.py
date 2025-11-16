@@ -34,7 +34,9 @@ tokenizer.chat_template = "{% set loop_messages = messages %}{% for message in l
 # Create a formatting function for the dataset structure
 def format_example(example):
     text = [
-        {"role": "system", "content": system_message}
+        {"role": "system", "content": example["instruction"]},
+        {"role": "user", "content": example["input"]},
+        {"role": "assistant", "content": example["output"]}
     ]
     # The tokenizer.chat_template is now globally set, so we don't need to pass it here.
     return {"text": tokenizer.apply_chat_template(text, tokenize=False, add_generation_prompt=False)}

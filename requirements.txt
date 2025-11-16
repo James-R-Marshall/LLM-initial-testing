@@ -1,0 +1,16 @@
+torch
+torchvision
+torchaudio
+transformers>=4.30
+accelerate>=0.20
+peft>=0.4.0
+safetensors
+einops
+sentencepiece
+tokenizers
+protobuf
+datasets
+tqdm
+huggingface-hub
+unsloth
+flask

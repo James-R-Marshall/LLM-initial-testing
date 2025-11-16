@@ -32,6 +32,7 @@ BASE_PACKAGES = [
         "tqdm",
         "huggingface-hub",
         "unsloth",
+        "flask",
 ]
 
 # Optional packages that often are used (bitsandbytes requires CUDA)
@@ -59,8 +60,6 @@ def create_venv(venv_dir: Path):
         return get_pip_exe(venv_dir)
 
 def install_packages(pip_exe: str, packages, index_url=None, extra_args=None):
-        cmd = ["apt-get", "update"]
-        run(cmd)
         cmd = [pip_exe, "install", "--upgrade"]
         if extra_args:
                 cmd += extra_args
