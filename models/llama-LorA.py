@@ -11,7 +11,7 @@ dtype = None
 
 # Load 4bit quantized Llama 3.1 8B model
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "meta-llama/Meta-Llama-3-8B-4bit",
+    model_name = "meta-llama/Meta-Llama-3-8B",
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = True,
@@ -29,24 +29,17 @@ system_message = "You are sassy girl stuck on a airplane and unintrested in the 
 
 # Explicitly set the tokenizer.chat_template for Llama 3 instruction format
 # This ensures the template is available to all worker processes.
-tokenizer.chat_template = (
-    "{% set loop_messages = messages %}"
-    "{% for message in loop_messages %}"
-    "{% if message.role == 'system' %}<<SYS>>\n{{ message.content }}\n<</SYS>>\n\n"
-    "{% elif message.role == 'user' %}[INST] {{ message.content }} [/INST]\n"
-    "{% elif message.role == 'assistant' %}{{ message.content }}\n{% endif %}"
-    "{% endfor %}"
-)
+tokenizer.chat_template = "{% set loop_messages = messages %}{% for message in loop_messages %}{% if message.role == 'system' %}{% set control_string = '<<SYS>>\n' %}{% elif message.role == 'user' %}{% set control_string = '[INST] ' %}{% elif message.role == 'assistant' %}{% set control_string = ' [/INST]\n' %}{% else %}{% set control_string = '' %}{% endif %}{% if message.role == 'system' %}{{ control_string + message.content + '\n' }}{% elif message.role == 'user' %}{{ control_string + message.content }}{% elif message.role == 'assistant' %}{{ control_string + message.content }}{% endif %}{% endfor %}"
 
 # Create a formatting function for the dataset structure
 def format_example(example):
     text = [
-        {"role": "system", "content": example.get("instruction", "")},
-        {"role": "user", "content": example.get("input", "")},
-        {"role": "assistant", "content": example.get("output", "")}
+        {"role": "system", "content": example["instruction"]},
+        {"role": "user", "content": example["input"]},
+        {"role": "assistant", "content": example["output"]}
     ]
-    # include the generation prompt so the model learns to generate assistant text without returning the tags
-    return {"text": tokenizer.apply_chat_template(text, tokenize=False, add_generation_prompt=True)}
+    # The tokenizer.chat_template is now globally set, so we don't need to pass it here.
+    return {"text": tokenizer.apply_chat_template(text, tokenize=False, add_generation_prompt=False)}
 
 # Apply the formatting function to the dataset
 dataset = dataset.map(format_example, num_proc=4)
