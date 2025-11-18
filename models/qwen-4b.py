@@ -13,13 +13,16 @@ max_seq_length = 2048
 dtype = None
 
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "Qwen/Qwen3-4B",
+    #model_name = "Qwen/Qwen3-4B",
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = True,
 )
 
 dataset = load_dataset('kjj0/4chanpol', token=token)
+print(dataset)
+print(dataset["train"][0])
 
 # Define the system message
 system_message = "You are sassy girl stuck on a airplane and unintrested in the person you are talking to."
@@ -36,7 +39,7 @@ def format_example(example):
         {"role": "assistant", "content": example["output"]}
     ]
     # The tokenizer.chat_template is now globally set, so we don't need to pass it here.
-    return {"text": tokenizer.apply_chat_template(text, tokenize=False, add_generation_prompt=False)}
+    return {"text": tokenizer.apply_chat_template(text, tokenize=False)}
 
 # Apply the formatting function to the dataset
 dataset = dataset.map(format_example, num_proc=4)
